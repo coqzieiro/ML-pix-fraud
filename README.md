@@ -41,7 +41,7 @@ O dataset é **sintético**, gerado para simular transações Pix reais com padr
 
 ### Qualidade dos dados
 
-A base apresenta valores ausentes em duas colunas — `account_state` (358 NaN) e `account_device` (3.717 NaN) — que deverão ser tratados durante o pré-processamento (e.g., imputação pela moda). Além disso, a distribuição das classes é **fortemente desbalanceada** (~97 % legítimas vs. ~3 % fraudes), o que exigirá técnicas específicas para evitar viés no treinamento, como oversampling com SMOTE.
+A base apresenta valores ausentes em duas colunas: `account_state` (358 NaN) e `account_device` (3.717 NaN) que deverão ser tratados durante o pré-processamento (e.g., imputação pela moda). Além disso, a distribuição das classes é **fortemente desbalanceada** (~97 % legítimas vs. ~3 % fraudes), o que exigirá técnicas específicas para evitar viés no treinamento, como oversampling com SMOTE.
 
 ---
 
@@ -49,7 +49,7 @@ A base apresenta valores ausentes em duas colunas — `account_state` (358 NaN) 
 
 ### O problema
 
-O **Pix**, sistema de pagamentos instantâneos criado pelo Banco Central do Brasil em 2020, ultrapassou 45 bilhões de transações anuais em 2025, consolidando-se como o principal meio de pagamento do país. Entretanto, a velocidade e a praticidade do sistema também o tornaram alvo de fraudadores — em 2024, fraudes via Pix geraram **R$ 4,9 bilhões** em perdas, motivando a criação do **MED (Mecanismo Especial de Devolução)** pelo Banco Central.
+O **Pix**, sistema de pagamentos instantâneos criado pelo Banco Central do Brasil em 2020, ultrapassou 45 bilhões de transações anuais em 2025, consolidando-se como o principal meio de pagamento do país. Entretanto, a velocidade e a praticidade do sistema também o tornaram alvo de fraudadores em 2024, fraudes via Pix geraram **R$ 4,9 bilhões** em perdas, motivando a criação do **MED (Mecanismo Especial de Devolução)** pelo Banco Central.
 
 O objetivo deste projeto é **construir um modelo de aprendizado de máquina capaz de classificar automaticamente transações Pix como legítimas ou fraudulentas**, auxiliando a detecção precoce de fraudes e, potencialmente, alimentando sistemas de alerta como o MED.
 
@@ -72,10 +72,10 @@ Pretendemos comparar quatro algoritmos representativos de diferentes paradigmas:
 
 Dada a natureza desbalanceada do problema, a **Accuracy** isolada é insuficiente (um classificador trivial que prediz sempre "legítima" já atingiria ~97 %). Portanto, pretendemos utilizar:
 
-- **Recall** (sensibilidade) — métrica mais crítica: cada fraude não detectada representa prejuízo financeiro direto.
-- **Precision** — proporção de alertas verdadeiramente fraudulentos.
-- **F1-Score** — média harmônica entre Precision e Recall, equilibrando ambas.
-- **AUC-ROC** — capacidade discriminativa ao longo de todos os thresholds de decisão.
+- **Recall** (sensibilidade) - métrica mais crítica: cada fraude não detectada representa prejuízo financeiro direto.
+- **Precision** - proporção de alertas verdadeiramente fraudulentos.
+- **F1-Score** - média harmônica entre Precision e Recall, equilibrando ambas.
+- **AUC-ROC** - capacidade discriminativa ao longo de todos os thresholds de decisão.
 
 A avaliação será conduzida com **Stratified 5-Fold Cross-Validation** e busca de hiperparâmetros para garantir robustez e reprodutibilidade.
 
@@ -84,8 +84,8 @@ A avaliação será conduzida com **Stratified 5-Fold Cross-Validation** e busca
 A partir dos atributos brutos, planejamos criar variáveis derivadas específicas do domínio Pix, como:
 
 - **Hora da transação** e **dia da semana** (extraídos de `transaction_datetime`)
-- **Razão valor/média** (`transaction_amount / account_avg_transaction_amount`) — indicador de desvio comportamental
-- **Indicador de madrugada** e **indicador de fim de semana** — padrões horários possivelmente associados a fraudes
+- **Razão valor/média** (`transaction_amount / account_avg_transaction_amount`): indicador de desvio comportamental
+- **Indicador de madrugada** e **indicador de fim de semana**: padrões horários possivelmente associados a fraudes
 
 A seleção final de features será feita com técnicas como **Mutual Information** para identificar os atributos mais discriminativos.
 
