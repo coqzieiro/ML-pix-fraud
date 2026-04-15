@@ -41,7 +41,7 @@ O dataset é **sintético**, gerado para simular transações Pix reais com padr
 
 ### Qualidade dos dados
 
-A base apresenta valores ausentes em duas colunas — `account_state` (358 NaN) e `account_device` (3.717 NaN) — que foram tratados por imputação pela moda durante o pré-processamento. Além disso, a distribuição das classes é **fortemente desbalanceada** (~97 % legítimas vs. ~3 % fraudes), exigindo técnicas específicas para evitar viés no treinamento (SMOTE).
+A base apresenta valores ausentes em duas colunas — `account_state` (358 NaN) e `account_device` (3.717 NaN) - que foram tratados por imputação pela moda durante o pré-processamento. Além disso, a distribuição das classes é **fortemente desbalanceada** (~97 % legítimas vs. ~3 % fraudes), exigindo técnicas específicas para evitar viés no treinamento (SMOTE).
 
 ---
 
@@ -64,8 +64,8 @@ Foram comparados quatro algoritmos representativos de diferentes paradigmas:
 | Modelo | Paradigma |
 |---|---|
 | **Regressão Logística** | Baseline linear |
-| **Random Forest** | Ensemble — Bagging |
-| **XGBoost** | Ensemble — Boosting |
+| **Random Forest** | Ensemble - Bagging |
+| **XGBoost** | Ensemble - Boosting |
 | **MLP (Multilayer Perceptron)** | Rede neural artificial |
 
 ### Métricas de avaliação
@@ -73,9 +73,9 @@ Foram comparados quatro algoritmos representativos de diferentes paradigmas:
 Dada a natureza desbalanceada do problema, a **Accuracy** isolada é insuficiente (um classificador trivial que prediz sempre "legítima" já atingiria ~97 %). Portanto, utilizamos:
 
 - **Recall** (sensibilidade) — métrica mais crítica: cada fraude não detectada representa prejuízo financeiro direto.
-- **Precision** — proporção de alertas verdadeiramente fraudulentos.
-- **F1-Score** — média harmônica entre Precision e Recall, equilibrando ambas.
-- **AUC-ROC** — capacidade discriminativa ao longo de todos os thresholds de decisão.
+- **Precision** - proporção de alertas verdadeiramente fraudulentos.
+- **F1-Score** - média harmônica entre Precision e Recall, equilibrando ambas.
+- **AUC-ROC** - capacidade discriminativa ao longo de todos os thresholds de decisão.
 
 A avaliação foi conduzida com **Stratified 5-Fold Cross-Validation** e busca de hiperparâmetros para garantir robustez e reprodutibilidade.
 
@@ -84,8 +84,8 @@ A avaliação foi conduzida com **Stratified 5-Fold Cross-Validation** e busca d
 A partir dos atributos brutos, foram criadas variáveis derivadas específicas do domínio Pix:
 
 - **Hora da transação** e **dia da semana** (extraídos de `transaction_datetime`)
-- **Razão valor/média** (`transaction_amount / account_avg_transaction_amount`) — indicador de desvio comportamental
-- **Indicador de madrugada** e **indicador de fim de semana** — padrões horários associados a fraudes
+- **Razão valor/média** (`transaction_amount / account_avg_transaction_amount`) - indicador de desvio comportamental
+- **Indicador de madrugada** e **indicador de fim de semana** - padrões horários associados a fraudes
 
 A seleção final de features foi feita via **Mutual Information**, identificando `account_transactions_last_24h`, `razao_valor_media`, `transaction_amount` e `account_age_days` como os atributos mais discriminativos.
 
