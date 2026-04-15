@@ -41,7 +41,7 @@ O dataset é **sintético**, gerado para simular transações Pix reais com padr
 
 ### Qualidade dos dados
 
-A base apresenta valores ausentes em duas colunas — `account_state` (358 NaN) e `account_device` (3.717 NaN) - que foram tratados por imputação pela moda durante o pré-processamento. Além disso, a distribuição das classes é **fortemente desbalanceada** (~97 % legítimas vs. ~3 % fraudes), exigindo técnicas específicas para evitar viés no treinamento (SMOTE).
+A base apresenta valores ausentes em duas colunas — `account_state` (358 NaN) e `account_device` (3.717 NaN) — que deverão ser tratados durante o pré-processamento (e.g., imputação pela moda). Além disso, a distribuição das classes é **fortemente desbalanceada** (~97 % legítimas vs. ~3 % fraudes), o que exigirá técnicas específicas para evitar viés no treinamento, como oversampling com SMOTE.
 
 ---
 
@@ -57,9 +57,9 @@ O objetivo deste projeto é **construir um modelo de aprendizado de máquina cap
 
 Dentro do escopo da disciplina de Aprendizado de Máquina, este projeto enquadra-se como um problema de **classificação binária supervisionada**: dado um conjunto de atributos descritivos de uma transação Pix, o objetivo é predizer o rótulo discreto `is_fraud ∈ {0, 1}`. A variável alvo já está disponível no dataset (aprendizado supervisionado) e possui exatamente duas classes (classificação binária).
 
-### Modelos investigados
+### Modelos a serem investigados
 
-Foram comparados quatro algoritmos representativos de diferentes paradigmas:
+Pretendemos comparar quatro algoritmos representativos de diferentes paradigmas:
 
 | Modelo | Paradigma |
 |---|---|
@@ -70,24 +70,24 @@ Foram comparados quatro algoritmos representativos de diferentes paradigmas:
 
 ### Métricas de avaliação
 
-Dada a natureza desbalanceada do problema, a **Accuracy** isolada é insuficiente (um classificador trivial que prediz sempre "legítima" já atingiria ~97 %). Portanto, utilizamos:
+Dada a natureza desbalanceada do problema, a **Accuracy** isolada é insuficiente (um classificador trivial que prediz sempre "legítima" já atingiria ~97 %). Portanto, pretendemos utilizar:
 
 - **Recall** (sensibilidade) — métrica mais crítica: cada fraude não detectada representa prejuízo financeiro direto.
-- **Precision** - proporção de alertas verdadeiramente fraudulentos.
-- **F1-Score** - média harmônica entre Precision e Recall, equilibrando ambas.
-- **AUC-ROC** - capacidade discriminativa ao longo de todos os thresholds de decisão.
+- **Precision** — proporção de alertas verdadeiramente fraudulentos.
+- **F1-Score** — média harmônica entre Precision e Recall, equilibrando ambas.
+- **AUC-ROC** — capacidade discriminativa ao longo de todos os thresholds de decisão.
 
-A avaliação foi conduzida com **Stratified 5-Fold Cross-Validation** e busca de hiperparâmetros para garantir robustez e reprodutibilidade.
+A avaliação será conduzida com **Stratified 5-Fold Cross-Validation** e busca de hiperparâmetros para garantir robustez e reprodutibilidade.
 
-### Engenharia de features
+### Engenharia de features (planejada)
 
-A partir dos atributos brutos, foram criadas variáveis derivadas específicas do domínio Pix:
+A partir dos atributos brutos, planejamos criar variáveis derivadas específicas do domínio Pix, como:
 
 - **Hora da transação** e **dia da semana** (extraídos de `transaction_datetime`)
-- **Razão valor/média** (`transaction_amount / account_avg_transaction_amount`) - indicador de desvio comportamental
-- **Indicador de madrugada** e **indicador de fim de semana** - padrões horários associados a fraudes
+- **Razão valor/média** (`transaction_amount / account_avg_transaction_amount`) — indicador de desvio comportamental
+- **Indicador de madrugada** e **indicador de fim de semana** — padrões horários possivelmente associados a fraudes
 
-A seleção final de features foi feita via **Mutual Information**, identificando `account_transactions_last_24h`, `razao_valor_media`, `transaction_amount` e `account_age_days` como os atributos mais discriminativos.
+A seleção final de features será feita com técnicas como **Mutual Information** para identificar os atributos mais discriminativos.
 
 ---
 
@@ -95,11 +95,11 @@ A seleção final de features foi feita via **Mutual Information**, identificand
 
 ```
 ML-pix-fraud/
-├── projeto_deteccao_fraude_pix.ipynb   # Notebook principal com análise completa
+├── projeto_deteccao_fraude_pix.ipynb   # Notebook principal (em desenvolvimento)
 ├── README.md                           # Este arquivo
 ├── data/
 │   └── pix_fraud_v1.csv               # Dataset (75.375 transações)
-└── figures/                            # Gráficos gerados pelo notebook
+└── figures/                            # Gráficos (a serem gerados)
 ```
 
 ## Como Executar
