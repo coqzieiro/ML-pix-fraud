@@ -37,7 +37,7 @@ O dataset é **sintético**, gerado para simular transações Pix reais com padr
 | `account_transactions_last_24h` | Numérico | Número de transações da conta nas últimas 24 horas |
 | `account_avg_transaction_amount` | Numérico (R$) | Valor médio histórico das transações da conta |
 | `internal_code` | Categórico | Código interno do sistema |
-| `is_fraud` | Binário | **Variável alvo** — 0 (legítima) ou 1 (fraude) |
+| `is_fraud` | Binário | **Variável alvo**: 0 (legítima) ou 1 (fraude) |
 
 ### Qualidade dos dados
 
