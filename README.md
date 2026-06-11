@@ -41,7 +41,24 @@ O dataset é **sintético**, gerado para simular transações Pix reais com padr
 
 ### Qualidade dos dados
 
-A base apresenta valores ausentes em duas colunas: `account_state` (358 NaN) e `account_device` (3.717 NaN) que deverão ser tratados durante o pré-processamento (e.g., imputação pela moda). Além disso, a distribuição das classes é **fortemente desbalanceada** (~97 % legítimas vs. ~3 % fraudes), o que exigirá técnicas específicas para evitar viés no treinamento, como oversampling com SMOTE.
+A base apresenta valores ausentes em `account_state` (358 NaN) e `account_device` (3.717 NaN), além de inconsistências importantes identificadas na auditoria exploratória:
+
+- 375 transações duplicadas por `transaction_id` (292 linhas duplicadas exatas)
+- 589 valores negativos em `transaction_amount`
+- 245 valores negativos em `account_age_days`
+- 1.475 estados inválidos ou inconsistentes após padronização de caixa e espaços
+
+No notebook, esses pontos são tratados de forma rastreável: duplicatas são removidas, campos fisicamente inválidos são corrigidos por clipping e flags de anomalia são preservadas como possíveis sinais preditivos. A distribuição das classes permanece **fortemente desbalanceada** (~97 % legítimas vs. ~3 % fraudes), exigindo avaliação cuidadosa e técnicas de balanceamento.
+
+### Principais insights exploratórios
+
+Alguns achados relevantes da análise exploratória:
+
+- Transações com chave Pix `aleatoria` concentram risco muito acima da média geral de fraude.
+- `desktop` e `tablet` apresentam taxa de fraude superior à de `mobile` no dataset.
+- A taxa de fraude varia por organização, indicando que segmentação operacional pode complementar o score do modelo.
+- Features comportamentais, como valor muito acima da média histórica e padrões temporais, ajudam a representar hipóteses realistas de fraude.
+- A análise de threshold permite escolher um ponto operacional mais adequado que o corte padrão de 0,50, dependendo do custo entre fraude perdida e falso alerta.
 
 ---
 
@@ -70,24 +87,29 @@ Pretendemos comparar quatro algoritmos representativos de diferentes paradigmas:
 
 ### Métricas de avaliação
 
-Dada a natureza desbalanceada do problema, a **Accuracy** isolada é insuficiente (um classificador trivial que prediz sempre "legítima" já atingiria ~97 %). Portanto, pretendemos utilizar:
+Dada a natureza desbalanceada do problema, a **Accuracy** isolada é insuficiente (um classificador trivial que prediz sempre "legítima" já atingiria ~97 %). Portanto, utilizamos:
 
 - **Recall** (sensibilidade) — métrica mais crítica: cada fraude não detectada representa prejuízo financeiro direto.
 - **Precision** — proporção de alertas verdadeiramente fraudulentos.
 - **F1-Score** — média harmônica entre Precision e Recall, equilibrando ambas.
+- **Balanced Accuracy** — média do desempenho por classe, útil quando há desbalanceamento.
 - **AUC-ROC** — capacidade discriminativa ao longo de todos os thresholds de decisão.
+- **Average Precision / Curva Precision-Recall** — mais informativa para classe rara.
 
-A avaliação será conduzida com **Stratified 5-Fold Cross-Validation** e busca de hiperparâmetros para garantir robustez e reprodutibilidade.
+A avaliação é conduzida com **Stratified 5-Fold Cross-Validation** e busca de hiperparâmetros. O balanceamento com SMOTE fica dentro de um `ImbPipeline`, evitando vazamento de dados entre treino e validação.
 
-### Engenharia de features (planejada)
+### Engenharia de features
 
-A partir dos atributos brutos, planejamos criar variáveis derivadas específicas do domínio Pix, como:
+A partir dos atributos brutos, criamos variáveis derivadas específicas do domínio Pix, como:
 
 - **Hora da transação** e **dia da semana** (extraídos de `transaction_datetime`)
 - **Razão valor/média** (`transaction_amount / account_avg_transaction_amount`) — indicador de desvio comportamental
 - **Indicador de madrugada** e **indicador de fim de semana** — padrões horários possivelmente associados a fraudes
+- **Conta nova**, **alta frequência em 24h**, **valor muito acima da média** e **perfil novo com alto valor**
+- **Flags de qualidade dos dados**, como valor originalmente negativo e idade de conta originalmente negativa
+- **Prefixo de código interno** e organização, usados para capturar variações operacionais
 
-A seleção final de features será feita com técnicas como **Mutual Information** para identificar os atributos mais discriminativos.
+A seleção final de features é feita com **Mutual Information**, permitindo identificar relações não lineares com a variável alvo.
 
 ---
 
@@ -97,9 +119,10 @@ A seleção final de features será feita com técnicas como **Mutual Informatio
 ML-pix-fraud/
 ├── projeto_deteccao_fraude_pix.ipynb   # Notebook principal (em desenvolvimento)
 ├── README.md                           # Este arquivo
+├── requirements.txt                    # Dependências do projeto
 ├── data/
 │   └── pix_fraud_v1.csv               # Dataset (75.375 transações)
-└── figures/                            # Gráficos (a serem gerados)
+└── figures/                            # Gráficos gerados pelo notebook
 ```
 
 ## Como Executar
@@ -114,7 +137,7 @@ python -m venv .venv
 source .venv/bin/activate
 
 # Instalar dependências
-pip install pandas numpy matplotlib seaborn scikit-learn xgboost imbalanced-learn
+pip install -r requirements.txt
 
 # Abrir o notebook
 jupyter notebook projeto_deteccao_fraude_pix.ipynb
