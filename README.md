@@ -66,7 +66,7 @@ Alguns achados relevantes da análise exploratória:
 
 ### O problema
 
-O **Pix**, sistema de pagamentos instantâneos criado pelo Banco Central do Brasil em 2020, ultrapassou 45 bilhões de transações anuais em 2025, consolidando-se como o principal meio de pagamento do país. Entretanto, a velocidade e a praticidade do sistema também o tornaram alvo de fraudadores — em 2024, fraudes via Pix geraram **R$ 4,9 bilhões** em perdas, motivando a criação do **MED (Mecanismo Especial de Devolução)** pelo Banco Central.
+O **Pix**, sistema de pagamentos instantâneos criado pelo Banco Central do Brasil em 2020, ultrapassou 45 bilhões de transações anuais em 2025, consolidando-se como o principal meio de pagamento do país. Entretanto, a velocidade e a praticidade do sistema também o tornaram alvo de fraudadores - em 2024, fraudes via Pix geraram **R$ 4,9 bilhões** em perdas, motivando a criação do **MED (Mecanismo Especial de Devolução)** pelo Banco Central.
 
 O objetivo deste projeto é **construir um modelo de aprendizado de máquina capaz de classificar automaticamente transações Pix como legítimas ou fraudulentas**, auxiliando a detecção precoce de fraudes e, potencialmente, alimentando sistemas de alerta como o MED.
 
@@ -89,12 +89,12 @@ Pretendemos comparar quatro algoritmos representativos de diferentes paradigmas:
 
 Dada a natureza desbalanceada do problema, a **Accuracy** isolada é insuficiente (um classificador trivial que prediz sempre "legítima" já atingiria ~97 %). Portanto, utilizamos:
 
-- **Recall** (sensibilidade) — métrica mais crítica: cada fraude não detectada representa prejuízo financeiro direto.
-- **Precision** — proporção de alertas verdadeiramente fraudulentos.
-- **F1-Score** — média harmônica entre Precision e Recall, equilibrando ambas.
-- **Balanced Accuracy** — média do desempenho por classe, útil quando há desbalanceamento.
-- **AUC-ROC** — capacidade discriminativa ao longo de todos os thresholds de decisão.
-- **Average Precision / Curva Precision-Recall** — mais informativa para classe rara.
+- **Recall** (sensibilidade) - métrica mais crítica: cada fraude não detectada representa prejuízo financeiro direto.
+- **Precision** - proporção de alertas verdadeiramente fraudulentos.
+- **F1-Score** - média harmônica entre Precision e Recall, equilibrando ambas.
+- **Balanced Accuracy** - média do desempenho por classe, útil quando há desbalanceamento.
+- **AUC-ROC** - capacidade discriminativa ao longo de todos os thresholds de decisão.
+- **Average Precision / Curva Precision-Recall** - mais informativa para classe rara.
 
 A avaliação é conduzida com **Stratified 5-Fold Cross-Validation** e busca de hiperparâmetros. O balanceamento com SMOTE fica dentro de um `ImbPipeline`, evitando vazamento de dados entre treino e validação.
 
@@ -103,8 +103,8 @@ A avaliação é conduzida com **Stratified 5-Fold Cross-Validation** e busca de
 A partir dos atributos brutos, criamos variáveis derivadas específicas do domínio Pix, como:
 
 - **Hora da transação** e **dia da semana** (extraídos de `transaction_datetime`)
-- **Razão valor/média** (`transaction_amount / account_avg_transaction_amount`) — indicador de desvio comportamental
-- **Indicador de madrugada** e **indicador de fim de semana** — padrões horários possivelmente associados a fraudes
+- **Razão valor/média** (`transaction_amount / account_avg_transaction_amount`) - indicador de desvio comportamental
+- **Indicador de madrugada** e **indicador de fim de semana** - padrões horários possivelmente associados a fraudes
 - **Conta nova**, **alta frequência em 24h**, **valor muito acima da média** e **perfil novo com alto valor**
 - **Flags de qualidade dos dados**, como valor originalmente negativo e idade de conta originalmente negativa
 - **Prefixo de código interno** e organização, usados para capturar variações operacionais
